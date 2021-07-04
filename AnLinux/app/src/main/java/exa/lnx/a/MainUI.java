@@ -1,5 +1,6 @@
 package exa.lnx.a;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -8,10 +9,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import androidx.annotation.NonNull;
@@ -31,14 +34,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.reward.RewardItem;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
-import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdCallback;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.Calendar;
@@ -51,7 +55,8 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
     DrawerLayout drawer;
     private long lastPressedTime;
     private static final int PERIOD = 3000;
-    private RewardedVideoAd mRewardedVideoAd;
+    private RewardedAd rewardedAd;
+    private RewardedAdLoadCallback adLoadCallback;
     InterstitialAd mInterstitialAd;
     AdView mAdView;
     RelativeLayout relativeLayout;
@@ -71,12 +76,23 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
         sharedPreferences = context.getSharedPreferences("GlobalPreferences", 0);
         editor = sharedPreferences.edit();
 
+        relativeLayout = findViewById(R.id.fragmentHolder);
+
+        mAdView = findViewById(R.id.adView);
+
         mInterstitialAd = new InterstitialAd(context);
         mInterstitialAd.setAdUnitId("ca-app-pub-5748356089815497/3581271493");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
         if(!donationInstalled() && !isVideoAdsWatched()){
-            mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            mAdView.loadAd(new AdRequest.Builder().build());
             shouldShowAds = true;
+        }else{
+            mAdView.pause();
+            mAdView.destroy();
+            mAdView.setVisibility(View.GONE);
+            relativeLayout.removeView(mAdView);
+            shouldShowAds = false;
         }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -89,14 +105,7 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        relativeLayout = findViewById(R.id.fragmentHolder);
         isOreoNotified = sharedPreferences.getBoolean("IsOreoNotified", false);
-
-        mAdView = findViewById(R.id.adView);
-
-        if(!donationInstalled() && !isVideoAdsWatched()){
-            mAdView.loadAd(new AdRequest.Builder().build());
-        }
 
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -108,60 +117,21 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
             }
         });
 
-        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
-        mRewardedVideoAd.loadAd("ca-app-pub-5748356089815497/5381178563", new AdRequest.Builder().build());
+        rewardedAd = new RewardedAd(this, "ca-app-pub-5748356089815497/2390763032");
 
-        mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
+        adLoadCallback = new RewardedAdLoadCallback() {
             @Override
-            public void onRewardedVideoAdLoaded() {
+            public void onRewardedAdLoaded() {
+                // Ad successfully loaded.
             }
+
             @Override
-            public void onRewardedVideoAdOpened() {
+            public void onRewardedAdFailedToLoad(LoadAdError adError) {
+                // Ad failed to load.
             }
-            @Override
-            public void onRewardedVideoStarted() {
-            }
-            @Override
-            public void onRewardedVideoAdClosed() {
-            }
-            @Override
-            public void onRewarded(RewardItem rewardItem) {
-                if(donationInstalled()){
-                    Calendar cal = Calendar.getInstance();
-                    Date date = cal.getTime();
-                    cal.setTime(date);
-                    int a =  cal.get(Calendar.DAY_OF_MONTH);
-                    int b = sharedPreferences.getInt("VideoAds", 0);
-                    if(a != b){
-                        editor.putInt("VideoAds", a);
-                        editor.apply();
-                    }
-                    Toast.makeText(context, R.string.thanks_for_support, Toast.LENGTH_LONG).show();
-                }else{
-                    Calendar cal = Calendar.getInstance();
-                    Date date = cal.getTime();
-                    cal.setTime(date);
-                    int a =  cal.get(Calendar.DAY_OF_MONTH);
-                    int b = sharedPreferences.getInt("VideoAds", 0);
-                    if(a != b){
-                        editor.putInt("VideoAds", a);
-                        editor.apply();
-                        relativeLayout.removeView(mAdView);
-                        Toast.makeText(context, R.string.ads_removed_temp, Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-            @Override
-            public void onRewardedVideoAdLeftApplication() {
-            }
-            @Override
-            public void onRewardedVideoAdFailedToLoad(int i) {
-            }
-            @Override
-            public void onRewardedVideoCompleted() {
-                mRewardedVideoAd.loadAd("ca-app-pub-5748356089815497/5381178563", new AdRequest.Builder().build());
-            }
-        });
+        };
+        rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
+
         if(donationInstalled()){
             if(savedInstanceState == null) {
                 MenuItem selected = navigationView.getMenu().findItem(R.id.dashboard);
@@ -212,6 +182,11 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
                 fragmentTransaction.replace(R.id.fragmentHolder, fragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
+            }else if(fragment instanceof HeavyDE){
+                fragment = new DashBoard();
+                fragmentTransaction.replace(R.id.fragmentHolder, fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
             }else if(fragment instanceof WindowManager){
                 fragment = new DashBoard();
                 fragmentTransaction.replace(R.id.fragmentHolder, fragment);
@@ -258,14 +233,14 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
             selected.setChecked(true);
             if(!(fragment instanceof DashBoard)){
                 if (i == 0) {
-                    if(mInterstitialAd.isLoaded()){
+                    if(mInterstitialAd.isLoaded() && shouldShowAds){
                         mInterstitialAd.show();
                     }
                     i = 1;
                 }else if(i == 1){
                     i = 2;
                 }else if(i == 2){
-                    if(mInterstitialAd.isLoaded()){
+                    if(mInterstitialAd.isLoaded() && shouldShowAds){
                         mInterstitialAd.show();
                     }
                     i = 0;
@@ -291,34 +266,56 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
             selected.setChecked(true);
             if(!(fragment instanceof DesktopEnvironment)){
                 if (i == 0) {
-                    if(mInterstitialAd.isLoaded()){
+                    if(mInterstitialAd.isLoaded() && shouldShowAds){
                         mInterstitialAd.show();
                     }
                     i = 1;
                 }else if(i == 1){
                     i = 2;
                 }else if(i == 2){
-                    if(mInterstitialAd.isLoaded()){
+                    if(mInterstitialAd.isLoaded() && shouldShowAds){
                         mInterstitialAd.show();
                     }
                     i = 0;
                 }
                 newFragment(2);
             }
-        }else if(id == R.id.wm){
-            MenuItem selected = navigationView.getMenu().findItem(R.id.wm);
+        }else if(id == R.id.hgui){
+            /*MenuItem selected = navigationView.getMenu().findItem(R.id.hgui);
             selected.setCheckable(true);
             selected.setChecked(true);
-            if(!(fragment instanceof WindowManager)){
+            if(!(fragment instanceof HeavyDE)){
                 if (i == 0) {
-                    if(mInterstitialAd.isLoaded()){
+                    if(mInterstitialAd.isLoaded() && shouldShowAds){
                         mInterstitialAd.show();
                     }
                     i = 1;
                 }else if(i == 1){
                     i = 2;
                 }else if(i == 2){
-                    if(mInterstitialAd.isLoaded()){
+                    if(mInterstitialAd.isLoaded() && shouldShowAds){
+                        mInterstitialAd.show();
+                    }
+                    i = 0;
+                }
+                newFragment(9);
+            }*/
+            //Temporary Code
+            notifyUserForTemporary();
+        }else if(id == R.id.wm){
+            MenuItem selected = navigationView.getMenu().findItem(R.id.wm);
+            selected.setCheckable(true);
+            selected.setChecked(true);
+            if(!(fragment instanceof WindowManager)){
+                if (i == 0) {
+                    if(mInterstitialAd.isLoaded() && shouldShowAds){
+                        mInterstitialAd.show();
+                    }
+                    i = 1;
+                }else if(i == 1){
+                    i = 2;
+                }else if(i == 2){
+                    if(mInterstitialAd.isLoaded() && shouldShowAds){
                         mInterstitialAd.show();
                     }
                     i = 0;
@@ -331,14 +328,14 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
             selected.setChecked(true);
             if(!(fragment instanceof Uninstaller)){
                 if (i == 0) {
-                    if(mInterstitialAd.isLoaded()){
+                    if(mInterstitialAd.isLoaded() && shouldShowAds){
                         mInterstitialAd.show();
                     }
                     i = 1;
                 }else if(i == 1){
                     i = 2;
                 }else if(i == 2){
-                    if(mInterstitialAd.isLoaded()){
+                    if(mInterstitialAd.isLoaded() && shouldShowAds){
                         mInterstitialAd.show();
                     }
                     i = 0;
@@ -351,14 +348,14 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
             selected.setChecked(true);
             if(!(fragment instanceof SSH)){
                 if (i == 0) {
-                    if(mInterstitialAd.isLoaded()){
+                    if(mInterstitialAd.isLoaded() && shouldShowAds){
                         mInterstitialAd.show();
                     }
                     i = 1;
                 }else if(i == 1){
                     i = 2;
                 }else if(i == 2){
-                    if(mInterstitialAd.isLoaded()){
+                    if(mInterstitialAd.isLoaded() && shouldShowAds){
                         mInterstitialAd.show();
                     }
                     i = 0;
@@ -371,14 +368,14 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
             selected.setChecked(true);
             if(!(fragment instanceof Patches)){
                 if (i == 0) {
-                    if(mInterstitialAd.isLoaded()){
+                    if(mInterstitialAd.isLoaded() && shouldShowAds){
                         mInterstitialAd.show();
                     }
                     i = 1;
                 }else if(i == 1){
                     i = 2;
                 }else if(i == 2){
-                    if(mInterstitialAd.isLoaded()){
+                    if(mInterstitialAd.isLoaded() && shouldShowAds){
                         mInterstitialAd.show();
                     }
                     i = 0;
@@ -393,14 +390,14 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
             selected.setChecked(true);
             if(!(fragment instanceof SU)){
                 if (i == 0) {
-                    if(mInterstitialAd.isLoaded()){
+                    if(mInterstitialAd.isLoaded() && shouldShowAds){
                         mInterstitialAd.show();
                     }
                     i = 1;
                 }else if(i == 1){
                     i = 2;
                 }else if(i == 2){
-                    if(mInterstitialAd.isLoaded()){
+                    if(mInterstitialAd.isLoaded() && shouldShowAds){
                         mInterstitialAd.show();
                     }
                     i = 0;
@@ -487,6 +484,13 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
                 break;
+
+            case 9:
+                fragment = new HeavyDE();
+                fragmentTransaction.replace(R.id.fragmentHolder, fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+                break;
         }
     }
     public void notifyUserForDocumentation(){
@@ -547,8 +551,60 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
         });
         alertDialog.setNegativeButton(R.string.watch_ads, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                if (mRewardedVideoAd.isLoaded()) {
-                    mRewardedVideoAd.show();
+                if (rewardedAd.isLoaded()) {
+                    Activity activityContext = MainUI.this;
+                    RewardedAdCallback adCallback = new RewardedAdCallback() {
+                        @Override
+                        public void onRewardedAdOpened() {
+                            // Ad opened.
+                        }
+
+                        @Override
+                        public void onRewardedAdClosed() {
+                            // Ad closed.
+                            rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
+                        }
+
+                        @Override
+                        public void onUserEarnedReward(@NonNull com.google.android.gms.ads.rewarded.RewardItem rewardItem) {
+                            // User earned reward.
+                            if(donationInstalled()){
+                                Calendar cal = Calendar.getInstance();
+                                Date date = cal.getTime();
+                                cal.setTime(date);
+                                int a =  cal.get(Calendar.DAY_OF_MONTH);
+                                int b = sharedPreferences.getInt("VideoAds", 0);
+                                if(a != b){
+                                    editor.putInt("VideoAds", a);
+                                    editor.apply();
+                                }
+                                Toast.makeText(context, R.string.thanks_for_support, Toast.LENGTH_LONG).show();
+                            }else{
+                                Calendar cal = Calendar.getInstance();
+                                Date date = cal.getTime();
+                                cal.setTime(date);
+                                int a =  cal.get(Calendar.DAY_OF_MONTH);
+                                int b = sharedPreferences.getInt("VideoAds", 0);
+                                if(a != b){
+                                    if(!donationInstalled() && !isVideoAdsWatched()){
+                                        mAdView.pause();
+                                        mAdView.destroy();
+                                        mAdView.setVisibility(View.GONE);
+                                        relativeLayout.removeView(mAdView);
+                                    }
+                                    editor.putInt("VideoAds", a);
+                                    editor.apply();
+                                    Toast.makeText(context, R.string.ads_removed_temp, Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        }
+                        @Override
+                        public void onRewardedAdFailedToShow(AdError adError) {
+                            // Ad failed to display.
+                            Toast.makeText(context, R.string.no_video_ads, Toast.LENGTH_SHORT).show();
+                        }
+                    };
+                    rewardedAd.show(activityContext, adCallback);
                 }else{
                     Toast.makeText(context, R.string.no_video_ads, Toast.LENGTH_SHORT).show();
                 }
@@ -574,8 +630,55 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
         alertDialog.setCancelable(false);
         alertDialog.setPositiveButton(R.string.watch_ads, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                if (mRewardedVideoAd.isLoaded()) {
-                    mRewardedVideoAd.show();
+                if (rewardedAd.isLoaded()) {
+                    Activity activityContext = MainUI.this;
+                    RewardedAdCallback adCallback = new RewardedAdCallback() {
+                        @Override
+                        public void onRewardedAdOpened() {
+                            // Ad opened.
+                        }
+
+                        @Override
+                        public void onRewardedAdClosed() {
+                            // Ad closed.
+                            rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
+                        }
+
+                        @Override
+                        public void onUserEarnedReward(@NonNull com.google.android.gms.ads.rewarded.RewardItem rewardItem) {
+                            // User earned reward.
+                            if(donationInstalled()){
+                                Calendar cal = Calendar.getInstance();
+                                Date date = cal.getTime();
+                                cal.setTime(date);
+                                int a =  cal.get(Calendar.DAY_OF_MONTH);
+                                int b = sharedPreferences.getInt("VideoAds", 0);
+                                if(a != b){
+                                    editor.putInt("VideoAds", a);
+                                    editor.apply();
+                                }
+                                Toast.makeText(context, R.string.thanks_for_support, Toast.LENGTH_LONG).show();
+                            }else{
+                                Calendar cal = Calendar.getInstance();
+                                Date date = cal.getTime();
+                                cal.setTime(date);
+                                int a =  cal.get(Calendar.DAY_OF_MONTH);
+                                int b = sharedPreferences.getInt("VideoAds", 0);
+                                if(a != b){
+                                    editor.putInt("VideoAds", a);
+                                    editor.apply();
+                                    relativeLayout.removeView(mAdView);
+                                    Toast.makeText(context, R.string.ads_removed_temp, Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        }
+                        @Override
+                        public void onRewardedAdFailedToShow(AdError adError) {
+                            // Ad failed to display.
+                            Toast.makeText(context, R.string.no_video_ads, Toast.LENGTH_SHORT).show();
+                        }
+                    };
+                    rewardedAd.show(activityContext, adCallback);
                 }else{
                     Toast.makeText(context, R.string.no_video_ads, Toast.LENGTH_SHORT).show();
                 }
@@ -627,8 +730,13 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
         textView.setText(R.string.bug_encounter);
     }
     private boolean donationInstalled() {
-        PackageManager packageManager = context.getPackageManager();
-        return packageManager.checkSignatures(context.getPackageName(), "exa.lnx.d") == PackageManager.SIGNATURE_MATCH;
+        PackageManager packageManager = getPackageManager();
+        try {
+            packageManager.getPackageInfo("exa.lnx.d", 0);
+            return true;
+        }catch(PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
     private boolean isVideoAdsWatched(){
         Calendar cal = Calendar.getInstance();
@@ -672,5 +780,31 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
                 }
             }
         });
+    }
+    //Temporary Code
+    public void notifyUserForTemporary(){
+        final ViewGroup nullParent = null;
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainUI.this);
+        LayoutInflater layoutInflater = LayoutInflater.from(MainUI.this);
+        View view = layoutInflater.inflate(R.layout.notify1, nullParent);
+        TextView textView = view.findViewById(R.id.textView);
+
+        alertDialog.setView(view);
+        alertDialog.setCancelable(false);
+        alertDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/EXALAB/AnLinux-App/issues/252"));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_NEW_DOCUMENT | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                startActivity(intent);
+                dialog.dismiss();
+            }
+        });
+        alertDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        alertDialog.show();
+        textView.setText("This feature originally enable user to install KDE on Ubuntu, which work perfectly on Ubuntu 18 (Bionic), however the same code failed for Ubuntu 20 (Focal), if you have any code that work correctly on Ubuntu Focal to contribute or want to know more about this, please go to the Github issue page.\n\nDo you want to go there now?");
     }
 }
