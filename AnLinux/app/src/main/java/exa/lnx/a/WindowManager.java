@@ -173,7 +173,7 @@ public class WindowManager extends Fragment {
             checkBox3.setChecked(true);
         }else if(distro.equals("Parrot")){
             checkBox4.setChecked(true);
-        }else if(distro.equals("BackVox")){
+        }else if(distro.equals("BackBox")){
             checkBox5.setChecked(true);
         }else if(distro.equals("Fedora")){
             checkBox6.setChecked(true);
@@ -398,6 +398,14 @@ public class WindowManager extends Fragment {
                     }else if(wm.equals("IceWM")){
                         textView3.setText(getString(R.string.gui_step2, "apt-get update && apt-get install wget -y && wget https://raw.githubusercontent.com/EXALAB/AnLinux-Resources/master/Scripts/WindowManager/Apt/IceWM/de-apt-icewm.sh --no-check-certificate && bash de-apt-icewm.sh", "IceWM"));
                         textView4.setText(getString(R.string.gui_step3, "./start-parrot.sh"));
+                    }
+                }else if(distro.equals("BackBox")){
+                    if(wm.equals("Awesome")){
+                        textView3.setText(getString(R.string.gui_step2, "apt-get update && apt-get install wget -y && wget https://raw.githubusercontent.com/EXALAB/AnLinux-Resources/master/Scripts/WindowManager/Apt/Awesome/de-apt-awesome.sh --no-check-certificate && bash de-apt-awesome.sh", "Awesome"));
+                        textView4.setText(getString(R.string.gui_step3, "./start-backbox.sh"));
+                    }else if(wm.equals("IceWM")){
+                        textView3.setText(getString(R.string.gui_step2, "apt-get update && apt-get install wget -y && wget https://raw.githubusercontent.com/EXALAB/AnLinux-Resources/master/Scripts/WindowManager/Apt/IceWM/de-apt-icewm.sh --no-check-certificate && bash de-apt-icewm.sh", "IceWM"));
+                        textView4.setText(getString(R.string.gui_step3, "./start-backbox.sh"));
                     }
                 }else if(distro.equals("Fedora")){
                     if(s.contains("arm") && !s.equals("arm64-v8a")){

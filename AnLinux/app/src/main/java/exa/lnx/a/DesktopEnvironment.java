@@ -541,6 +541,20 @@ public class DesktopEnvironment extends Fragment {
                         textView3.setText(getString(R.string.gui_step2, "apt-get update && apt-get install wget -y && wget https://raw.githubusercontent.com/EXALAB/AnLinux-Resources/master/Scripts/DesktopEnvironment/Apt/LXDE/de-apt-lxde.sh --no-check-certificate && bash de-apt-lxde.sh", "LXDE"));
                         textView4.setText(getString(R.string.gui_step3, "./start-parrot.sh"));
                     }
+                }else if(distro.equals("BackBox")){
+                    if(desktop.equals("Xfce4")){
+                        textView3.setText(getString(R.string.gui_step2, "apt-get update && apt-get install wget -y && wget https://raw.githubusercontent.com/EXALAB/AnLinux-Resources/master/Scripts/DesktopEnvironment/Apt/Xfce4/de-apt-xfce4.sh --no-check-certificate && bash de-apt-xfce4.sh", "Xfce"));
+                        textView4.setText(getString(R.string.gui_step3, "./start-backbox.sh"));
+                    }else if(desktop.equals("Mate")){
+                        textView3.setText(getString(R.string.gui_step2, "apt-get update && apt-get install wget -y && wget https://raw.githubusercontent.com/EXALAB/AnLinux-Resources/master/Scripts/DesktopEnvironment/Apt/Mate/de-apt-mate.sh --no-check-certificate && bash de-apt-mate.sh", "Mate"));
+                        textView4.setText(getString(R.string.gui_step3, "./start-backbox.sh"));
+                    }else if(desktop.equals("LXQt")){
+                        textView3.setText(getString(R.string.gui_step2, "apt-get update && apt-get install wget -y && wget https://raw.githubusercontent.com/EXALAB/AnLinux-Resources/master/Scripts/DesktopEnvironment/Apt/LXQt/de-apt-lxqt.sh --no-check-certificate && bash de-apt-lxqt.sh", "LXQt"));
+                        textView4.setText(getString(R.string.gui_step3, "./start-backbox.sh"));
+                    }else if(desktop.equals("LXDE")){
+                        textView3.setText(getString(R.string.gui_step2, "apt-get update && apt-get install wget -y && wget https://raw.githubusercontent.com/EXALAB/AnLinux-Resources/master/Scripts/DesktopEnvironment/Apt/LXDE/de-apt-lxde.sh --no-check-certificate && bash de-apt-lxde.sh", "LXDE"));
+                        textView4.setText(getString(R.string.gui_step3, "./start-backbox.sh"));
+                    }
                 }else if(distro.equals("Fedora")){
                     if(s.contains("arm") && !s.equals("arm64-v8a")){
                         if(desktop.equals("Xfce4")){

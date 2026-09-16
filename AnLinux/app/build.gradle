@@ -6,8 +6,8 @@ android {
         minSdkVersion 24
         targetSdkVersion 37
         compileSdk 37
-        versionCode 676
-        versionName "6.76 Stable"
+        versionCode 677
+        versionName "6.77 Stable"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     configurations.configureEach {
