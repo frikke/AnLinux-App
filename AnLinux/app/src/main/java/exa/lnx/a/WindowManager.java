@@ -25,12 +25,21 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.libraries.ads.mobile.sdk.common.AdLoadCallback;
+import com.google.android.libraries.ads.mobile.sdk.common.AdRequest;
+import com.google.android.libraries.ads.mobile.sdk.common.LoadAdError;
+import com.google.android.libraries.ads.mobile.sdk.interstitial.InterstitialAd;
+import com.google.android.libraries.ads.mobile.sdk.interstitial.InterstitialAdEventCallback;
+
 import java.util.Calendar;
 import java.util.Date;
 
 public class WindowManager extends Fragment {
 
     Context context;
+    InterstitialAd mInterstitialAd;
     SharedPreferences sharedPreferences;
     Button button;
     Button button2;
@@ -48,6 +57,7 @@ public class WindowManager extends Fragment {
     int rightMargin;
     int topMargin;
     int bottomMargin;
+    boolean shouldShowAds;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         getActivity().setTitle(R.string.wm_title);
@@ -56,7 +66,9 @@ public class WindowManager extends Fragment {
 
         context = getActivity().getApplicationContext();
 
+        loadAd();
         sharedPreferences = context.getSharedPreferences("GlobalPreferences", 0);
+        shouldShowAds = sharedPreferences.getBoolean("ShouldShowAds", false);
 
         scrollView = view.findViewById(R.id.scrollView);
         relativeLayoutParam = (RelativeLayout.LayoutParams)scrollView.getLayoutParams();
@@ -130,6 +142,13 @@ public class WindowManager extends Fragment {
                             ClipData clip = ClipData.newPlainText("Command", "yum install wget -y && wget https://raw.githubusercontent.com/EXALAB/AnLinux-Resources/master/Scripts/WindowManager/Yum/IceWM/de-yum-icewm.sh --no-check-certificate && bash de-yum-icewm.sh");
                             clipboard.setPrimaryClip(clip);
                         }
+                    }
+                }
+                if(mInterstitialAd != null && shouldShowAds && !donationInstalled() && !isVideoAdsWatched()){
+                    if(MainUI.i == 0){
+                        mInterstitialAd.show(getActivity());
+                        MainUI.i = 1;
+                        MainUI.lockOpenAds = true;
                     }
                 }
                 Toast.makeText(context, getString(R.string.command_copied), Toast.LENGTH_SHORT).show();
@@ -513,5 +532,36 @@ public class WindowManager extends Fragment {
             scrollView.setLayoutParams(relativeLayoutParam);
             scrollView.requestLayout();
         }
+    }
+    public void loadAd(){
+
+        InterstitialAd.load(
+                new AdRequest.Builder("ca-app-pub-5748356089815497/3581271493").build(),
+                new AdLoadCallback<InterstitialAd>() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd ad) {
+                        // Called when an ad has loaded.
+                        ad.setAdEventCallback(new InterstitialAdEventCallback() {
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                // Called when fullscreen content is dismissed.
+                            }
+
+                            @Override
+                            public void onAdShowedFullScreenContent() {
+                                // Called when fullscreen content is shown.
+                                // Make sure to set your reference to null so you don't
+                                // show it a second time.
+                                mInterstitialAd = null;
+                            }
+                        });
+                        mInterstitialAd = ad;
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError adError) {
+                        // Called when ad fails to load.
+                    }
+                });
     }
 }

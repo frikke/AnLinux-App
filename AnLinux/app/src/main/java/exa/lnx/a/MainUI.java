@@ -79,9 +79,9 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
     FrameLayout frameLayout;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
-    int i = 0;
+    public static int i = 0;
     boolean shouldShowAds;
-    boolean lockOpenAds = false;
+    public static boolean lockOpenAds = false;
     boolean showOpenAdsNow = false;
     boolean isOreoNotified;
     boolean isFirstBugNotified;
@@ -267,7 +267,6 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
                         public void onShowAdComplete() {
                             // Empty because the user will go back to the activity that shows the ad.
                             showOpenAdsNow = false;
-                            i = -1;
                         }
                     });
                 }
@@ -290,7 +289,6 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
                         // Empty because the user will go back to the activity that shows the ad.
                         lockOpenAds = false;
                         showOpenAdsNow = false;
-                        i = -1;
                     }
                 });
             }
@@ -306,7 +304,6 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
                                 public void onShowAdComplete() {
                                     // Empty because the user will go back to the activity that shows the ad.
                                     showOpenAdsNow = false;
-                                    i = -1;
                                 }
                             });
                         }
@@ -445,15 +442,6 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
             selected.setCheckable(true);
             selected.setChecked(true);
             if(!(fragment instanceof DashBoard)){
-                if (i == 0) {
-                    if(mInterstitialAd != null && shouldShowAds && !donationInstalled()){
-                        mInterstitialAd.show(MainUI.this);
-                        lockOpenAds = true;
-                        i = 1;
-                    }
-                }else if(i == -1){
-                    i = 0;
-                }
                 newFragment(0);
             }
         }else if(id == R.id.about){
@@ -478,15 +466,6 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
             selected.setCheckable(true);
             selected.setChecked(true);
             if(!(fragment instanceof DesktopEnvironment)){
-                if (i == 0) {
-                    if(mInterstitialAd != null && shouldShowAds && !donationInstalled()){
-                        mInterstitialAd.show(MainUI.this);
-                        lockOpenAds = true;
-                        i = 1;
-                    }
-                }else if(i == -1){
-                    i = 0;
-                }
                 newFragment(2);
             }
         }else if(id == R.id.hgui){
@@ -494,15 +473,6 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
             selected.setCheckable(true);
             selected.setChecked(true);
             if(!(fragment instanceof HeavyDE)){
-                if (i == 0) {
-                    if(mInterstitialAd != null && shouldShowAds && !donationInstalled()){
-                        mInterstitialAd.show(MainUI.this);
-                        lockOpenAds = true;
-                        i = 1;
-                    }
-                }else if(i == -1){
-                    i = 0;
-                }
                 newFragment(9);
             }
             //Temporary Code, will be back later if any error in the future
@@ -512,15 +482,6 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
             selected.setCheckable(true);
             selected.setChecked(true);
             if(!(fragment instanceof WindowManager)){
-                if (i == 0) {
-                    if(mInterstitialAd != null && shouldShowAds && !donationInstalled()){
-                        mInterstitialAd.show(MainUI.this);
-                        lockOpenAds = true;
-                        i = 1;
-                    }
-                }else if(i == -1){
-                    i = 0;
-                }
                 newFragment(3);
             }
         }else if(id == R.id.uninstall){
@@ -528,15 +489,6 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
             selected.setCheckable(true);
             selected.setChecked(true);
             if(!(fragment instanceof Uninstaller)){
-                if (i == 0) {
-                    if(mInterstitialAd != null && shouldShowAds && !donationInstalled()){
-                        mInterstitialAd.show(MainUI.this);
-                        lockOpenAds = true;
-                        i = 1;
-                    }
-                }else if(i == -1){
-                    i = 0;
-                }
                 newFragment(4);
             }
         }else if(id == R.id.ssh){
@@ -544,15 +496,6 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
             selected.setCheckable(true);
             selected.setChecked(true);
             if(!(fragment instanceof SSH)){
-                if (i == 0) {
-                    if(mInterstitialAd != null && shouldShowAds && !donationInstalled()){
-                        mInterstitialAd.show(MainUI.this);
-                        lockOpenAds = true;
-                        i = 1;
-                    }
-                }else if(i == -1){
-                    i = 0;
-                }
                 newFragment(5);
             }
         }else if(id == R.id.patch){
@@ -560,15 +503,6 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
             selected.setCheckable(true);
             selected.setChecked(true);
             if(!(fragment instanceof Patches)){
-                if (i == 0) {
-                    if(mInterstitialAd != null && shouldShowAds && !donationInstalled()){
-                        mInterstitialAd.show(MainUI.this);
-                        lockOpenAds = true;
-                        i = 1;
-                    }
-                }else if(i == -1){
-                    i = 0;
-                }
                 newFragment(6);
             }
         }else if(id == R.id.documentation){
@@ -578,15 +512,6 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
             selected.setCheckable(true);
             selected.setChecked(true);
             if(!(fragment instanceof SU)){
-                if (i == 0) {
-                    if(mInterstitialAd != null && shouldShowAds && !donationInstalled()){
-                        mInterstitialAd.show(MainUI.this);
-                        lockOpenAds = true;
-                        i = 1;
-                    }
-                }else if(i == -1){
-                    i = 0;
-                }
                 newFragment(7);
             }
         }else if(id == R.id.rootfs_download){
@@ -594,15 +519,6 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
             selected.setCheckable(true);
             selected.setChecked(true);
             if(!(fragment instanceof Patches)){
-                if (i == 0) {
-                    if(mInterstitialAd != null && shouldShowAds && !donationInstalled()){
-                        mInterstitialAd.show(MainUI.this);
-                        lockOpenAds = true;
-                        i = 1;
-                    }
-                }else if(i == -1){
-                    i = 0;
-                }
                 newFragment(8);
             }
         }else if(id == R.id.wiki) {
@@ -610,15 +526,6 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
             selected.setCheckable(true);
             selected.setChecked(true);
             if (!(fragment instanceof Patches)) {
-                if (i == 0) {
-                    if (mInterstitialAd != null && shouldShowAds && !donationInstalled()) {
-                        mInterstitialAd.show(MainUI.this);
-                        lockOpenAds = true;
-                        i = 1;
-                    }
-                }else if(i == -1){
-                    i = 0;
-                }
                 newFragment(10);
             }
         }
@@ -964,7 +871,6 @@ public class MainUI extends AppCompatActivity implements NavigationView.OnNaviga
                                 public void onShowAdComplete() {
                                     // Empty because the user will go back to the activity that shows the ad.
                                     showOpenAdsNow = false;
-                                    i = -1;
                                 }
                             });
                         }

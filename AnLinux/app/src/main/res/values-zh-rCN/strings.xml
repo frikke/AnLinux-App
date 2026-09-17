@@ -49,10 +49,10 @@
     <string name="same_arch_linux">Black Arch（与 Arch Linux 相同）</string>
     <string name="termux_not_Installed">看来您尚未安装 Termux，但 AnLinux 只能在 v0.118.0 或更高版本的 Termux 中运行。\n\n重要提示：Google Play 商店中的 Termux 已经停止维护，且未来将不再更新。Termux 开发团队现在仅在 F-Droid 发布更新。请问您是否要立即前往 F-Droid 下载？（进入页面后向下滚动并点击 Download APK）</string>
     <string name="termux_not_fdroid">看来您正在使用已弃用版本的 Termux，但 AnLinux 只能在 v0.118.0 或更高版本的 Termux 中运行。\n\n重要提示：Google Play 商店中的 Termux 已经停止维护，且未来将不再更新。Termux 开发团队现在仅在 F-Droid 发布更新。请问您是否要立即前往 F-Droid 下载？（进入页面后向下滚动并点击 Download APK）</string>
-    <string name="uninstall_step2">第二步：请复制此命令：%1$s \n\n这将会把 %2$s 从 Termux 中彻底移除。</string>
+    <string name="uninstall_step2">第二步：请复制此命令：%1$s \n\n这将会把 %2$s 从 Termux 中彻底移除。\n\n（首次复制命令可能会显示广告。）</string>
     <string name="uninstall_step3">第三步：启动 Termux，粘贴并运行此命令以卸载。重要提示：您必须在 Termux 终端中执行此命令，而不是在 Linux 终端中。</string>
     <string name="ashmem_step1">如果您的设备屏幕较小，请向下滚动以查看其他步骤。\n\n警告：在继续之前，请确保 Linux 发行版中已安装 wget。同时请注意，该命令必须在 Linux 终端中运行，而不是在 Termux 中，否则将无法生效！\n\n关于 Ashmem：Android 上的 System V 共享内存模拟，使用 ashmem。包括 shmget、shmat、shmdt 和 shmctl 函数。它不使用 Binder 服务，也不关联 Java 库。它使用 Linux 的 sendmsg/recvmsg API 来传输文件句柄。\n\n作用：当您在运行某些 GUI 程序遇到错误时，安装此补丁可能会解决问题。\n\n使用方法：env LD_PRELOAD="/usr/local/lib/libandroid-shmem.so" &lt;命令&gt;</string>
-    <string name="ashmem_step2">第二步：请复制此命令：%1$s \n\n这将会把 %2$s 安装到您的系统。</string>
+    <string name="ashmem_step2">第二步：请复制此命令：%1$s \n\n这将会把 %2$s 安装到您的系统。\n\n（首次复制命令可能会显示广告。）</string>
     <string name="ashmem_step3">第三步：启动 Termux，粘贴并运行此命令以安装补丁。注意：您必须先运行 ./start-*.sh 启动 Linux 系统，然后才能使用此命令。</string>
     <string name="bug_encounter">如果您遇到 Bug，可以选择在 GitHub 上提交 Issue，或者向我们发送电子邮件。</string>
     <string name="support_after_donation">感谢您购买捐赠包！您依然可以通过观看视频广告来支持开发者，或者继续使用此应用。</string>
@@ -63,18 +63,18 @@
     <string name="ads_removed_temp">今日广告已免除。</string>
     <string name="thanks_for_support">感谢您的支持！</string>
     <string name="documentation_prompt">不知道如何操作？\n\n忘记了如何启动或退出发行版，或者忘记了如何启动 VNC 服务（桌面环境）？\n\n那么此指南非常适合您。如果您有这些问题，或者对应用有任何不解，都可以在 GitHub 维基页面中找到解决方案。\n\n是否立即访问？</string>
-    <string name="ssh_step2">第二步：请复制此命令：%1$s \n\n这将在 Linux 系统上设置 OpenSSH。</string>
+    <string name="ssh_step2">第二步：请复制此命令：%1$s \n\n这将在 Linux 系统上设置 OpenSSH。\n\n（首次复制命令可能会显示广告。）</string>
     <string name="ssh_step3">第三步：启动 Termux，粘贴并运行此命令以设置 SSH。注意：您必须先运行 %1$s 启动 Linux 系统，然后才能使用此命令。</string>
     <string name="de_step2_choose_first">第二步：请选择一个桌面环境</string>
     <string name="de_step3_choose_first">第三步：请先选择一个桌面环境</string>
     <string name="de_step4_choose_first">第四步：请先选择一个桌面环境</string>
-    <string name="gui_step2">第三步：请复制此命令：%1$s \n\n这将在 Linux 系统上安装 %2$s 和 Tiger VNC。</string>
+    <string name="gui_step2">第三步：请复制此命令：%1$s \n\n这将在 Linux 系统上安装 %2$s 和 Tiger VNC。\n\n（首次复制命令可能会显示广告。）</string>
     <string name="gui_step3">第四步：启动 Termux，粘贴并运行此命令以安装桌面环境。注意：您必须先运行 %1$s 启动 Linux 系统，然后才能使用此命令。</string>
-    <string name="dashboard_step2">第二步：请复制此命令：%1$s \n\n这将在您的设备上安装 %2$s，之后您可以运行 %3$s 来启动命令行。</string>
+    <string name="dashboard_step2">第二步：请复制此命令：%1$s \n\n这将在您的设备上安装 %2$s，之后您可以运行 %3$s 来启动命令行。\n\n（首次复制命令可能会显示广告。）</string>
     <string name="dashboard_step3">第三步：启动 Termux，粘贴并运行此命令以安装发行版。注意：之后您必须运行 %1$s 才能进入命令行。</string>
-    <string name="dashboard_step2_arch">第二步：请复制此命令：%1$s \n\n这将在您的系统上安装 %2$s，之后您可以运行 %3$s 来进入命令行。\n\n启动后，您必须运行以下命令：chmod 755 additional.sh &amp;&amp; ./additional.sh 来设置 resolv.conf 和 pacman-key，否则网络连接和 pacman 将无法正常工作！（仅限首次）</string>
+    <string name="dashboard_step2_arch">第二步：请复制此命令：%1$s \n\n这将在您的系统上安装 %2$s，之后您可以运行 %3$s 来进入命令行。\n\n启动后，您必须运行以下命令：chmod 755 additional.sh &amp;&amp; ./additional.sh 来设置 resolv.conf 和 pacman-key，否则网络连接和 pacman 将无法正常工作！（仅限首次）\n\n（首次复制命令可能会显示广告。）</string>
     <string name="dashboard_step3_arch">第三步：启动 Termux，粘贴并运行此命令以安装发行版。注意：您之后必须运行 ./start-arch.sh 启动命令行。之后，您还需要运行 ./additional.sh 来设置 resolv.conf 和 pacman-key，否则网络连接和 pacman 将无法正常工作！（仅限首次）</string>
-    <string name="dashboard_step2_blackarch">注意：请在 Arch Linux 系统中运行此命令以启用 BlackArch 软件源（必须先安装 Arch Linux）。\n\n第二步：请复制此命令：%1$s</string>
+    <string name="dashboard_step2_blackarch">注意：请在 Arch Linux 系统中运行此命令以启用 BlackArch 软件源（必须先安装 Arch Linux）。\n\n第二步：请复制此命令：%1$s\n\n（首次复制命令可能会显示广告。）</string>
     <string name="dashboard_step3_blackarch">第三步：启动 Termux，运行 ./start-arch.sh 进入 Arch Linux，粘贴并运行此命令以启用 BlackArch 软件源。注意：您必须先运行 ./start-arch.sh 进入 Arch Linux 终端，然后才能执行上述命令。</string>
     <string name="arch_linux_warning_content">Arch Linux 的系统镜像比其他发行版更大（大约 400 MB），解压后会占用大量设备空间。强烈建议在安装前预留至少 1.5 GB 的空闲空间。\n\n\n注意：\n\n1. 解压镜像时，tar 可能会产生类似于 tar: Ignoring unknown extended header keyword \'SCHILY.fflags\' 的提示，这并无危害，直接忽略即可。\n\n2. Arch Linux 镜像托管在外部服务器上，在某些特殊情况下链接可能会失效。如果遇到此问题，请向开发者发送电子邮件：exalabdevelopers@gmail.com</string>
     <string name="nethunter_warning_content">请稍等！\n\n打扰一下，以下是重要警告：\n\n1. Kali Nethunter 镜像本身约为 1 GB，解压后会占用更多空间，建议在安装前预留 5 GB 的空闲空间。\n\n2. 解压镜像需要一些时间（大约 10 分钟）。\n\n3. 桌面环境在此系统上无法工作，切勿在 Nethunter 中运行 Kali 的桌面环境命令。\n\n4. Nethunter 镜像已超过一年未更新，部分组件可能已损坏。如果您需要最新且个性化的体验，请选择普通的 Kali 发行版。</string>
@@ -87,7 +87,7 @@
     <string name="command_copied">命令已复制</string>
     <string name="close">关闭</string>
     <string name="seccomp_step1">如果您的设备屏幕较小，请向下滚动以查看所有步骤。\n\n警告：仅在遇到类似 Proot signal 6 或 function not implemented 的错误时才需运行此补丁。</string>
-    <string name="seccomp_step2">第二步：请复制此命令：echo "export PROOT_NO_SECCOMP=1" >> .bashrc &amp;&amp; hash -r</string>
+    <string name="seccomp_step2">第二步：请复制此命令：echo "export PROOT_NO_SECCOMP=1" >> .bashrc &amp;&amp; hash -r\n\n（首次复制命令可能会显示广告。）</string>
     <string name="seccomp_step3">第三步：启动 Termux，粘贴并运行该命令以应用补丁。注意：您必须直接在 Termux 终端中执行此命令，而不是在 Linux 系统中，否则将无法生效！</string>
     <string name="rootfs_download">下载 Rootfs</string>
     <string name="rootfs_download_content">此功能仅用于下载 rootfs（或简称为发行版基础包）以供离线使用。如果您需要正常安装发行版，应在“仪表盘”中进行安装，而不是这里。\n\n部分用户可能出于研究或学习目的需要下载 rootfs，我们创建此功能以方便用户轻松找到下载位置。\n\n点击下方按钮将直接打开 GitHub 上存放 rootfs 的网页，不再进行额外提示：\nhttps://github.com/EXALAB/AnLinux-Resources/tree/master/Rootfs</string>
